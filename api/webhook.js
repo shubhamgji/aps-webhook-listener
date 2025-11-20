@@ -1,17 +1,25 @@
-// api/webhook.js
-
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        // Log the webhook payload to Vercel logs
-        console.log('Webhook received:', req.body);
-
-        // Respond back to APS
-        res.status(200).json({
-            message: 'Webhook received successfully',
-            data: req.body
+        let body = '';
+        await new Promise((resolve) => {
+            req.on('data', chunk => body += chunk);
+            req.on('end', resolve);
         });
-    } else {
-        // Handle non-POST requests
-        res.status(405).json({ message: 'Method Not Allowed' });
+
+        const parsedBody = JSON.parse(body);
+        console.log('Webhook received:', parsedBody);
+
+        return res.status(200).json({
+            message: 'Webhook received successfully',
+            data: parsedBody
+        });
     }
+
+    if (req.method === 'GET') {
+        const { challenge } = req.query;
+        if (challenge) return res.status(200).send(challenge);
+        return res.status(400).send('Missing challenge parameter');
+    }
+
+    res.status(405).json({ message: 'Method Not Allowed' });
 }
