@@ -1,0 +1,10 @@
+{
+    "name": "aps-webhook-listener",
+    "version": "1.0.0",
+    "description": "Autodesk Platform Services Webhook Listener on Vercel",
+    "main": "api/webhook.js",
+    "scripts": {
+      "start": "vercel dev"
+    },
+    "dependencies": {}
+  }
